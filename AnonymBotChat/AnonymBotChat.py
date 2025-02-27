@@ -1,6 +1,7 @@
 import telebot
 import logging
 from telebot import types
+from config import token
 
 # Логирование
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -85,5 +86,5 @@ class AnonymousChatBot:
 
 if __name__ == '__main__':
     # Вставь сюда токен своего бота
-    bot = AnonymousChatBot("7574326854:AAEMgD5qlf8Tg1ziTeXbYM0tRZvM5teFhV8")
+    bot = AnonymousChatBot(token)
     bot.run()
