@@ -9,7 +9,7 @@ class MessageHandler:
         # Регистрируем обработчики сообщений (кроме команд)
         self.bot.message_handler(
             func=lambda message: not self.is_command(message),
-            content_types=['text', 'photo', 'document', 'audio', 'video', 'voice', 'sticker', 'location', 'contact']
+            content_types=['text', 'photo', 'document', 'audio', 'video', 'voice', 'sticker', 'location', 'contact', 'video_note']
         )(self.handle_message)
 
     def is_command(self, message):
@@ -64,6 +64,10 @@ class MessageHandler:
                     phone_number=message.contact.phone_number,
                     first_name=message.contact.first_name
                 )
+
+            # Пересылка видеосообщений (кружков)
+            elif message.video_note:
+                self.bot.send_video_note(partner_id, message.video_note.file_id)
 
             # Пересылка других типов сообщений (например, анимации, опросов и т.д.)
             else:

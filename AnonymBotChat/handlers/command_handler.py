@@ -8,7 +8,7 @@ class CommandHandler:
 
     def start(self, message):
         user_id = message.from_user.id
-        self.bot.send_message(user_id, 'Добро пожаловать в анонимный чат! Нажми /search чтобы начать поиск собеседника.')
+        self.bot.send_message(user_id, 'Добро пожаловать в анонимный чат СОНО! Нажми /search чтобы начать поиск собеседника.')
         db.Create_user(user_id, message.from_user.username)
 
     def search(self, message):
