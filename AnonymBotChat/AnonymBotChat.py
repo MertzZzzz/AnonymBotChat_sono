@@ -3,6 +3,7 @@ import telebot
 import logging
 from telebot import types
 from database import ProfileDB
+from handlers.Message_handler import MessageHandler
 
 Settings = BotSettings
 token = Settings.token
@@ -48,18 +49,7 @@ class UserManager:
     def get_partner(self, user_id):
         return self.pairs.get(user_id)
 
-class MessageHandler:
-    def __init__(self, bot, user_manager):
-        self.bot = bot
-        self.user_manager = user_manager
 
-    def handle_message(self, message):
-        user_id = message.from_user.id
-        partner_id = self.user_manager.get_partner(user_id)
-        if partner_id:
-            self.bot.send_message(partner_id, message.text)
-        else:
-            self.bot.send_message(user_id, 'Вы не в чате. Нажмите /search чтобы найти собеседника.')
 
 class CommandHandler:
     def __init__(self, bot, user_manager):
@@ -106,6 +96,22 @@ class CommandHandler:
         else:
             self.bot.send_message(user_id, 'Вы не в чате.')
 
+    def link(self, message):
+        user_id = message.from_user.id
+        partner_id = self.user_manager.get_partner(user_id)
+
+        if not partner_id:
+            self.bot.send_message(user_id, 'Вы не в чате. Нажмите /search чтобы найти собеседника.')
+            return
+
+        username = message.from_user.username
+        if username:
+            profile_link = f"https://t.me/{username}"
+            self.bot.send_message(user_id, f"Ссылка на ваш профиль отправлена собеседнику")
+            self.bot.send_message(partner_id, f"Ссылка на профиль вашего собеседника: {profile_link}")
+        else:
+            self.bot.send_message(user_id, "У вас не установлен username. Пожалуйста, установите username в настройках Telegram, чтобы использовать эту команду.")
+
 class AnonymousChatBot:
     def __init__(self, token):
         self.bot = telebot.TeleBot(token)
@@ -119,6 +125,7 @@ class AnonymousChatBot:
         self.bot.message_handler(commands=['stop'])(self.command_handler.stop)
         self.bot.message_handler(commands=['next'])(self.command_handler.search)
         self.bot.message_handler(commands=['cancel'])(self.command_handler.cancel)
+        self.bot.message_handler(commands=['link'])(self.command_handler.link)  # Добавлен обработчик команды /link
         self.bot.message_handler(func=lambda message: True)(self.message_handler.handle_message)
 
     def run(self):
