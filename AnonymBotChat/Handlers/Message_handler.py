@@ -3,14 +3,14 @@ class MessageHandler:
         self.bot = bot
         self.user_manager = user_manager
 
-        # Регистрируем обработчики сообщений (кроме команд)
+        # Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё СЃРѕРѕР±С‰РµРЅРёР№ (РєСЂРѕРјРµ РєРѕРјР°РЅРґ)
         self.bot.message_handler(
             func=lambda message: not self.is_command(message),
             content_types=['text', 'photo', 'document', 'audio', 'video', 'voice', 'sticker', 'location', 'contact']
         )(self.handle_message)
 
     def is_command(self, message):
-        """Проверяет, является ли сообщение командой."""
+        """РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЃРѕРѕР±С‰РµРЅРёРµ РєРѕРјР°РЅРґРѕР№."""
         return message.content_type == 'text' and message.text.startswith('/')
 
     def handle_message(self, message):
@@ -18,43 +18,43 @@ class MessageHandler:
         partner_id = self.user_manager.get_partner(user_id)
 
         if not partner_id:
-            self.bot.send_message(user_id, 'Вы не в чате. Нажмите /search чтобы найти собеседника.')
+            self.bot.send_message(user_id, 'Р’С‹ РЅРµ РІ С‡Р°С‚Рµ. РќР°Р¶РјРёС‚Рµ /search С‡С‚РѕР±С‹ РЅР°Р№С‚Рё СЃРѕР±РµСЃРµРґРЅРёРєР°.')
             return
 
         try:
-            # Пересылка текстовых сообщений
+            # РџРµСЂРµСЃС‹Р»РєР° С‚РµРєСЃС‚РѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
             if message.text:
                 self.bot.send_message(partner_id, message.text)
 
-            # Пересылка фото
+            # РџРµСЂРµСЃС‹Р»РєР° С„РѕС‚Рѕ
             elif message.photo:
                 self.bot.send_photo(partner_id, message.photo[-1].file_id, caption=message.caption)
 
-            # Пересылка аудио
+            # РџРµСЂРµСЃС‹Р»РєР° Р°СѓРґРёРѕ
             elif message.audio:
                 self.bot.send_audio(partner_id, message.audio.file_id, caption=message.caption)
 
-            # Пересылка видео
+            # РџРµСЂРµСЃС‹Р»РєР° РІРёРґРµРѕ
             elif message.video:
                 self.bot.send_video(partner_id, message.video.file_id, caption=message.caption)
 
-            # Пересылка документов
+            # РџРµСЂРµСЃС‹Р»РєР° РґРѕРєСѓРјРµРЅС‚РѕРІ
             elif message.document:
                 self.bot.send_document(partner_id, message.document.file_id, caption=message.caption)
 
-            # Пересылка голосовых сообщений
+            # РџРµСЂРµСЃС‹Р»РєР° РіРѕР»РѕСЃРѕРІС‹С… СЃРѕРѕР±С‰РµРЅРёР№
             elif message.voice:
                 self.bot.send_voice(partner_id, message.voice.file_id)
 
-            # Пересылка стикеров
+            # РџРµСЂРµСЃС‹Р»РєР° СЃС‚РёРєРµСЂРѕРІ
             elif message.sticker:
                 self.bot.send_sticker(partner_id, message.sticker.file_id)
 
-            # Пересылка местоположения
+            # РџРµСЂРµСЃС‹Р»РєР° РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёСЏ
             elif message.location:
                 self.bot.send_location(partner_id, message.location.latitude, message.location.longitude)
 
-            # Пересылка контактов
+            # РџРµСЂРµСЃС‹Р»РєР° РєРѕРЅС‚Р°РєС‚РѕРІ
             elif message.contact:
                 self.bot.send_contact(
                     partner_id,
@@ -62,10 +62,10 @@ class MessageHandler:
                     first_name=message.contact.first_name
                 )
 
-            # Пересылка других типов сообщений (например, анимации, опросов и т.д.)
+            # РџРµСЂРµСЃС‹Р»РєР° РґСЂСѓРіРёС… С‚РёРїРѕРІ СЃРѕРѕР±С‰РµРЅРёР№ (РЅР°РїСЂРёРјРµСЂ, Р°РЅРёРјР°С†РёРё, РѕРїСЂРѕСЃРѕРІ Рё С‚.Рґ.)
             else:
                 self.bot.forward_message(partner_id, message.chat.id, message.message_id)
 
         except Exception as e:
-            print(f"Ошибка при пересылке сообщения: {e}")
-            self.bot.send_message(user_id, 'Произошла ошибка при пересылке сообщения.')
+            print(f"РћС€РёР±РєР° РїСЂРё РїРµСЂРµСЃС‹Р»РєРµ СЃРѕРѕР±С‰РµРЅРёСЏ: {e}")
+            self.bot.send_message(user_id, 'РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё РїРµСЂРµСЃС‹Р»РєРµ СЃРѕРѕР±С‰РµРЅРёСЏ.')

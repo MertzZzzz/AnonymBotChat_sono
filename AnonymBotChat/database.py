@@ -22,7 +22,7 @@ class ProfileDB(Database):
     def Create_user(user_id,username):
         conn = sqlite3.connect('bot.db')
         c = conn.cursor()
-        c.execute('INSERT INTO users (ID, USERNAME) VALUES (?, ?)', (user_id, username))
+        c.execute('INSERT OR REPLACE INTO users (ID, USERNAME) VALUES (?, ?)', (user_id, username))
         conn.commit()
         conn.close()
 
