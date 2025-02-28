@@ -8,7 +8,7 @@ class CommandHandler:
 
     def start(self, message):
         user_id = message.from_user.id
-        self.bot.send_message(user_id, 'Добро пожаловать в анонимный чат СОНО! Нажми /search чтобы начать поиск собеседника.')
+        self.bot.send_message(user_id, 'Добро пожаловать в анонимный чат СОНО!\n/search чтобы начать поиск собеседника\n/help чтобы ознакомиться с командами бота')
         db.Create_user(user_id, message.from_user.username)
 
     def search(self, message):
@@ -41,10 +41,10 @@ class CommandHandler:
         user_id = message.from_user.id
         partner_id = self.user_manager.remove_pair(user_id)
         if partner_id:
-            self.bot.send_message(user_id, 'Вы вышли из чата.')
-            self.bot.send_message(partner_id, 'Собеседник покинул чат.')
+            self.bot.send_message(user_id, 'Вы вышли из чата.\nВведите /search чтобы найти нового собеседника')
+            self.bot.send_message(partner_id, 'Собеседник закончил чат.\nВведите /search чтобы найти нового собеседника')
         else:
-            self.bot.send_message(user_id, 'Вы не в чате.')
+            self.bot.send_message(user_id, 'Вы не в чате. Нажмите /search чтобы найти собеседника.')
 
     def link(self, message):
         user_id = message.from_user.id
@@ -56,8 +56,12 @@ class CommandHandler:
 
         username = message.from_user.username
         if username:
-            profile_link = f"https://t.me/{username}"
-            self.bot.send_message(user_id, f"Ссылка на ваш профиль отправлена собеседнику")
-            self.bot.send_message(partner_id, f"Ссылка на профиль вашего собеседника: {profile_link}")
+            profile_link = f"[Ссылка](https://t.me/{username})"
+            self.bot.send_message(user_id, f"{profile_link} на ваш профиль отправлена собеседнику",parse_mode='MarkdownV2')
+            self.bot.send_message(partner_id, f"{profile_link} на профиль вашего собеседника",parse_mode='MarkdownV2')
         else:
             self.bot.send_message(user_id, "У вас не установлен username. Пожалуйста, установите username в настройках Telegram, чтобы использовать эту команду.")
+    def help(self,message):
+        user_id = message.from_user.id
+        help_str='/search - найти собеседника\n/cancel - отменить поиск собеседника\n/stop - остановить диалог с собеседником\n/link - отправить ссылку на ваш профиль собеседнику'
+        self.bot.send_message(user_id,help_str)

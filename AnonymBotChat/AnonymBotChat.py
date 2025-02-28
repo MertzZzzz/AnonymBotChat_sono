@@ -31,6 +31,7 @@ class AnonymousChatBot:
         self.bot.message_handler(commands=['next'])(self.command_handler.search)
         self.bot.message_handler(commands=['cancel'])(self.command_handler.cancel)
         self.bot.message_handler(commands=['link'])(self.command_handler.link)  # Добавлен обработчик команды /link
+        self.bot.message_handler(commands=['help'])(self.command_handler.help)
         self.bot.message_handler(func=lambda message: True)(self.message_handler.handle_message)
 
     def run(self):
